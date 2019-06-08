@@ -3,10 +3,10 @@ import * as ReactDOM from 'react-dom';
 import { Bar } from 'react-chartjs-2';
 
 
-interface QuickSortState{
+interface BubbleSortState{
 	list: number[]
 }
-interface QuickSortProps{
+interface BubbleSortProps{
 	list: number[]
 }
 interface Dataset{
@@ -23,14 +23,17 @@ interface BarChartData{
 	datasets: Dataset[]
 }
 
-class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
-    constructor(props: QuickSortProps){
+class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
+    constructor(props: BubbleSortProps){
 		super(props);
 		this.state = {
 			list: this.props.list
 		}
-		this.quicksort = this.quicksort.bind(this);
-		this.quicksort(props.list);
+		this.bubblesort = this.bubblesort.bind(this);
+		this.handleClick = this.handleClick.bind(this);
+	}
+	handleClick(): void{
+		this.bubblesort(this.state.list);
 	}
 	createData(list: number[]): any{
 		return {
@@ -48,26 +51,26 @@ class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
 			]
 		}
 	}
-	quicksort(list: number[]): number[]{
-		if(list.length < 2){
-			return list;
+	sleep(msec: number){
+		var dt1 = new Date().getTime();
+		var dt2 = new Date().getTime();
+		while (dt2 < dt1 + msec){
+			dt2 = new Date().getTime();
 		}
-		let pivot = list[0];
-		let left = list.slice(1).filter((v) => v < pivot);
-		let right = list.slice(1).filter((v) => v >= pivot);
-		left =  JSON.parse(JSON.stringify(left)) as number[];
-		left.push(pivot);
-		right = JSON.parse(JSON.stringify(right)) as number[];
-		let result = this.quicksort(left).concat(this.quicksort(right));
-		setTimeout(() => {
-			this.setState({
-				list: result
-			});
-		}, 2000);
+		return;
+	}
+	bubblesort(list: number[]): number[]{
+		let result = JSON.parse(JSON.stringify(list));
+		for(let i=0;i<result.length-1;i++){
+			for(let j=i;j<result.length;j++){
+				if(result[i] > result[j]){
+					result[i]=[result[j],result[j]=result[i]][0];
+				}
+			}
+		}
 		return result;
 	}
 	render(): JSX.Element {
-		console.log(this.state.list);
 		return (
 				<div>
 				<Bar
@@ -75,8 +78,9 @@ class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
 			width={100}
 			height={50}
 				/>
+				<button onClick={this.handleClick}>Sort!</button>
 				</div>
 		)
 	}
 }
-export default QuickSort;
+export default BubbleSort;
