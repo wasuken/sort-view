@@ -31,7 +31,14 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 		}
 		this.bubblesort = this.bubblesort.bind(this);
 		this.handleClick = this.handleClick.bind(this);
+		this.wait = this.wait.bind(this);
 	}
+	wait(sec: number){
+		return new Promise((resolve, reject) => {
+			setTimeout(resolve, sec*1000);
+			//setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
+		});
+	};
 	handleClick(): void{
 		this.bubblesort(this.state.list);
 	}
@@ -59,16 +66,27 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 		}
 		return;
 	}
-	bubblesort(list: number[]): number[]{
+	async bubblesort(list: number[]){
 		let result = JSON.parse(JSON.stringify(list));
 		for(let i=0;i<result.length-1;i++){
 			for(let j=i;j<result.length;j++){
 				if(result[i] > result[j]){
 					result[i]=[result[j],result[j]=result[i]][0];
+					try {
+						await this.wait(2);
+						this.setState({
+							list: JSON.parse(JSON.stringify(result))
+						});
+					} catch (err) {
+						console.error(err);
+					}
 				}
 			}
 		}
-		return result;
+		this.setState({
+			list: result
+		});
+		alert("sorted");
 	}
 	render(): JSX.Element {
 		return (

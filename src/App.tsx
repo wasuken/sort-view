@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-// import QuickSort from './components/quicksort'
+import QuickSort from './components/quicksort'
 import BubbleSort from './components/bubblesort'
 
 interface AppState{
