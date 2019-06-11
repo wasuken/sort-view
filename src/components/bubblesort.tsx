@@ -36,13 +36,12 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 	wait(sec: number){
 		return new Promise((resolve, reject) => {
 			setTimeout(resolve, sec*1000);
-			//setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
 		});
 	};
 	handleClick(): void{
 		this.bubblesort(this.state.list);
 	}
-	createData(list: number[]): any{
+	createData(list: number[]): BarChartData{
 		return {
 			labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
 			datasets: [
@@ -58,20 +57,12 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 			]
 		}
 	}
-	sleep(msec: number){
-		var dt1 = new Date().getTime();
-		var dt2 = new Date().getTime();
-		while (dt2 < dt1 + msec){
-			dt2 = new Date().getTime();
-		}
-		return;
-	}
 	async bubblesort(list: number[]){
 		let result = JSON.parse(JSON.stringify(list));
-		for(let i=0;i<result.length-1;i++){
-			for(let j=i;j<result.length;j++){
-				if(result[i] > result[j]){
-					result[i]=[result[j],result[j]=result[i]][0];
+		for(let i=0;i<result.length-2;i++){
+			for(let j=0;j<result.length-1;j++){
+				if(result[j] > result[j+1]){
+					result[j]=[result[j+1],result[j+1]=result[j]][0];
 					try {
 						await this.wait(2);
 						this.setState({
@@ -84,7 +75,7 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 			}
 		}
 		this.setState({
-			list: result
+			list: JSON.parse(JSON.stringify(result))
 		});
 		alert("sorted");
 	}
@@ -96,7 +87,7 @@ class BubbleSort extends React.Component<BubbleSortProps, BubbleSortState>{
 			width={100}
 			height={50}
 				/>
-				<button onClick={this.handleClick}>Sort!</button>
+				<button id="bubble-sort-click" onClick={this.handleClick}>Sort!</button>
 				</div>
 		)
 	}

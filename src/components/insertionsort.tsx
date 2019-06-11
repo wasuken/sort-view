@@ -3,10 +3,10 @@ import * as ReactDOM from 'react-dom';
 import { Bar } from 'react-chartjs-2';
 
 
-interface QuickSortState{
+interface InsertionSortState{
 	list: number[]
 }
-interface QuickSortProps{
+interface InsertionSortProps{
 	list: number[]
 }
 interface Dataset{
@@ -23,21 +23,25 @@ interface BarChartData{
 	datasets: Dataset[]
 }
 
-class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
-    constructor(props: QuickSortProps){
+class InsertionSort extends React.Component<InsertionSortProps, InsertionSortState>{
+    constructor(props: InsertionSortProps){
 		super(props);
 		this.state = {
 			list: this.props.list
 		}
-		this.quicksort = this.quicksort.bind(this);
-		this.quicksort(props.list);
+		this.insertionsort = this.insertionsort.bind(this);
+		this.handleClick = this.handleClick.bind(this);
+		this.wait = this.wait.bind(this);
 	}
 	wait(sec: number){
 		return new Promise((resolve, reject) => {
 			setTimeout(resolve, sec*1000);
 		});
 	};
-	createData(list: number[]): any{
+	handleClick(): void{
+		this.insertionsort(this.state.list);
+	}
+	createData(list: number[]): BarChartData{
 		return {
 			labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
 			datasets: [
@@ -53,11 +57,29 @@ class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
 			]
 		}
 	}
-	async quicksort(list: number[]){
-
+	async insertionsort(list: number[]){
+		let result = JSON.parse(JSON.stringify(list));
+		for(let i=0;i<result.length-1;i++){
+			for(let j=i;j<result.length;j++){
+				if(result[i] > result[j]){
+					result[i]=[result[j],result[j]=result[i]][0];
+					try {
+						await this.wait(2);
+						this.setState({
+							list: JSON.parse(JSON.stringify(result))
+						});
+					} catch (err) {
+						console.error(err);
+					}
+				}
+			}
+		}
+		this.setState({
+			list: result
+		});
+		alert("sorted");
 	}
 	render(): JSX.Element {
-		console.log(this.state.list);
 		return (
 				<div>
 				<Bar
@@ -65,8 +87,9 @@ class QuickSort extends React.Component<QuickSortProps, QuickSortState>{
 			width={100}
 			height={50}
 				/>
+				<button id="insertion-sort-click" onClick={this.handleClick}>Sort!</button>
 				</div>
 		)
 	}
 }
-export default QuickSort;
+export default InsertionSort;
